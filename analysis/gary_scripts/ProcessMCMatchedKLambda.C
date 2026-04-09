@@ -1,15 +1,3 @@
-//this needs to go before include mesonMC.h
-//otherwise dont get correct path
-//at compile time
-// #ifdef CTEQ_TBL_PATH
-//   #undef CTEQ_TBL_PATH
-// #endif
-// #define CTEQ_TBL_PATH "../../mesonSFgen/src/cteq-tbls"
-
-// #include "../../mesonSFgen/src/EIC_mesonMC.h"
-// //#include "../../mesonSFgen/src/EIC_mesonMC.cpp"
-// #include "../../mesonSFgen/src/functions/sf.h"
-
 #include "ePICReaction.h"
 #include "ParticleCreator.h"
 #include "ePICParticleCreator.h"
@@ -38,19 +26,17 @@ void ProcessMCMatchedKLambda(std::vector<std::string> infiles={"/w/work5/home/ga
   //outfile="tempout.root";
   
   gBenchmark->Start("df total");
-  infiles = rad::files::GetXRootDFiles("dtn-eic.jlab.org/","/volatile/eic/romanov/meson-structure-2025-08/reco/18x275/","edm4eic.root",-1);
-  for(auto file : infiles)
-    std::cout << file << std::endl;
+  //infiles = rad::files::GetXRootDFiles("dtn-eic.jlab.org/","/volatile/eic/romanov/meson-structure-2025-08/reco/18x275/","edm4eic.root",-1);
+  //for(auto file : infiles)
+  //std::cout << file << std::endl;
+  
   rad::config::ePICReaction epic{"events",infiles};
   epic.SetBeamsFromMC(); //for this file 0=ebeam 1=pbeam
   
   epic.AliasColumnsAndMatchWithMC();
   
-  //rad::indice::UseAsID(index, offset) offset in case beam particle included in record
-  //epic.setScatElectron(rad::indice::UseAsID(0,2), {"MCScatteredElectrons_objIdx.index"});
   epic.setScatElectronIndex(0);
-  //epic.setParticleIndex("pprime",rad::indice::UseAsID(0,2),{"MCScatteredProtons_objIdx.index"},2212);
-
+  
   
   //particle creator
   rad::epic::ePICParticleCreator epic_particles{epic};
@@ -96,10 +82,6 @@ void ProcessMCMatchedKLambda(std::vector<std::string> infiles={"/w/work5/home/ga
   rad::rdf::y(epic,"y");
   rad::rdf::xbj(epic,"xbj");
 
-  // epic.Define("inucl","1");
-  // epic.Define("tru_F2N",F2N, {"tru_xbj","tru_Q2","inucl"});
-  // epic.Define("rec_F2N",F2N, {"rec_xbj","rec_Q2","inucl"});
-  
   //t distribution, column name
   rad::rdf::TTop(epic,"t_top");
   rad::rdf::TBot(epic,"t_bot");
